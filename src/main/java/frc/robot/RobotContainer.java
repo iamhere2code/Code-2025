@@ -22,7 +22,7 @@ import frc.robot.Constants.Constants.CAN;
 import frc.robot.commands.PrematchChecks;
 import frc.robot.commands.autonomous.Autonomous;
 import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.LEDs.LEDs;
 import frc.robot.subsystems.RobotStateController;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.hang.Hang;
@@ -104,8 +104,7 @@ public class RobotContainer {
     stateController = new RobotStateController(swerveDrive);
     ledStrip =
         new LEDs(
-            stateController,
-            () -> 1.0 + KinematicsUtils.getTranslation(swerveDrive.getEstimatedSpeeds()).getNorm());
+            stateController);
     intake = new Intake();
     manipulator = new Manipulator();
     elevator = new Elevator();
@@ -116,7 +115,7 @@ public class RobotContainer {
     // System.out.println(swerveDrive);
 
     // // Configure the trigger bindings
-    Controls.configureBindings(stateController, swerveDrive, elevator, manipulator, intake, hang);
+    Controls.configureBindings(stateController, swerveDrive, elevator, manipulator, hang, ledStrip);
 
     // module = new SwerveModule();
 

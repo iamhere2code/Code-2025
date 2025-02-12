@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Constants.DEVICES;
 import frc.robot.commands.drive.XBoxSwerve;
+import frc.robot.subsystems.LEDs.LEDs;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.hang.Hang;
 import frc.robot.subsystems.intake.Intake;
@@ -28,8 +29,8 @@ public class Controls {
       SwerveDrive swerveDrive,
       Elevator elevator,
       Manipulator manipulator,
-      Intake intake,
-      Hang hang) {
+      Hang hang,
+      LEDs ledStrip) {
 
     // Driver
     // Move swerve chassis
