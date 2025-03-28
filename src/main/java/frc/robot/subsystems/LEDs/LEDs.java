@@ -17,12 +17,11 @@ import edu.wpi.first.units.measure.Distance;
 
 
 public class LEDs extends SubsystemBase {
-  private static AddressableLED strip1;
-  private static AddressableLED strip2;
+  private static AddressableLED strip;
   private static AddressableLEDBuffer buffer;
   private static State state = State.DEFAULT;
   private final LEDPattern m_rainbow = LEDPattern.rainbow(255, 128);
-  private static final Distance kLedSpacing = Meters.of(1 / 120.0);
+  private static final Distance kLedSpacing = Meters.of(1 / 20.0);
   private final LEDPattern m_scrollingRainbow =
         m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
@@ -63,16 +62,12 @@ public class LEDs extends SubsystemBase {
   public static final Color MAGENTA = new Color(255, 0, 255);
   
   public LEDs() {
-    strip1 = new AddressableLED(LED.port);
-    strip2 = new AddressableLED(LED.port + 1);
+    strip = new AddressableLED(LED.port);
     buffer = new AddressableLEDBuffer(LED.SIDE_STRIP_HEIGHT);
-    strip1.setLength(buffer.getLength());
-    strip2.setLength(buffer.getLength());
+    strip.setLength(buffer.getLength());
 
-    strip1.setData(buffer);
-    strip2.setData(buffer);
-    strip2.start();
-    strip1.start();
+    strip.setData(buffer);
+    strip.start();
   }
 
   public static Command setStateCommand(State state) {
@@ -101,8 +96,7 @@ public class LEDs extends SubsystemBase {
     pattern.applyTo(buffer);
 
     // Write the data to the LED strip
-    strip1.setData(buffer);
-    strip2.setData(buffer);
+    strip.setData(buffer);
   }
 
   @Override
@@ -116,8 +110,7 @@ public class LEDs extends SubsystemBase {
         break;
       case DEFAULT:
         m_scrollingRainbow.applyTo(buffer);
-        strip1.setData(buffer);
-        strip2.setData(buffer);
+        strip.setData(buffer);
         break;
       case DRIVING_AUTO:
         apply(createColor(WHITE, WHITE, 1.0, 50.0));
@@ -129,14 +122,16 @@ public class LEDs extends SubsystemBase {
         apply(createColor(BLUE, ANTARES_BLUE, 1.0, 50.0));
         break;
       case AUTO_ALIGN:
-          apply(createColor(DARK_GREEN, DARK_GREEN, 1.0, 50.0));
+        apply(createColor(DARK_GREEN, DARK_GREEN, 1.0, 50.0));
+        break;
       case HAS_CORAL:
         apply(createColor(ANTARES_YELLOW, ANTARES_YELLOW, 1.0, 50.0));
         break;
       case GOOD:
         apply(createColor(GREEN, GREEN, 1.0, 50.0));
+        break;
       case CAN_SEE_ALGAE:
-        apply(createColor(CYAN, CYAN, 1.0, 50.0));
+        apply(createColor(ANTARES_BLUE, CYAN, 1.0, 50.0));
         break;
       /*case HAS_ALGAE:
         apply(createColor(DARK_GREEN, DARK_GREEN, 1.0, 50.0));

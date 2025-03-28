@@ -69,8 +69,7 @@ public class RobotContainer {
   public final Hang hang;
   public final AutonomousCommands autonomous;
   public final Algae algaeDetector;
-  private final LEDs ledStrip1;
-  private final LEDs ledStrip2;
+  private final LEDs ledStrip;
   public final PieceCombos pieceCombos;
   public final SafeSubsystems safeties;
   // public final ManipulatorSafeties manipulatorSafeties;
@@ -124,8 +123,7 @@ public class RobotContainer {
     Logger.logEnabledSystems();
 
     swerveDrive = new SwerveDrive(SWERVE.CONFIG);
-    ledStrip1 = new LEDs();
-    ledStrip2 = new LEDs();
+    ledStrip = new LEDs();
 
     manipulator = new Manipulator();
     elevator = Elevator.create();
@@ -229,7 +227,7 @@ public class RobotContainer {
 
   public void latePeriodic() {
     swerveDrive.latePeriodic(); 
-    ledStrip1.periodic();
+    ledStrip.periodic();
 
     // Pose2d[] poses;
 
@@ -269,7 +267,7 @@ public class RobotContainer {
     // checks.schedule();
 
     // elevator.rezeroAtBottom().schedule();
-    //LEDs.setState(LEDs.State.ENABLED);
+    LEDs.setState(LEDs.State.DEFAULT);
 
     swerveDrive.getModules()[0].calibrateSteerMotor(Amps.of(80)).schedule();
   }

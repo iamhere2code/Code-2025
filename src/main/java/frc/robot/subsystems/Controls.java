@@ -43,17 +43,22 @@ public class Controls {
 
     driver.a().whileTrue(autonomous.alignToClosestFace(false));
     driver
-        .b()
-        .whileTrue(
-            autonomous.alignToClosestPoleTeleop(
-                AutonomousCommands.PolePattern.RIGHT, () -> rumbleBoth().repeatedly()));
-                LEDs.setState(LEDs.State.AUTO_ALIGN);
+    .b()
+    .whileTrue(
+        autonomous.alignToClosestPoleTeleop(
+            AutonomousCommands.PolePattern.RIGHT, () -> rumbleBoth().repeatedly())
+            .beforeStarting(() -> LEDs.setState(LEDs.State.AUTO_ALIGN)) 
+            .andThen(() -> LEDs.setState(LEDs.State.DEFAULT)) 
+    );
+
     driver
-        .x()
-        .whileTrue(
-            autonomous.alignToClosestPoleTeleop(
-                AutonomousCommands.PolePattern.LEFT, () -> rumbleBoth().repeatedly()));
-                LEDs.setState(LEDs.State.AUTO_ALIGN);
+    .x()
+    .whileTrue(
+        autonomous.alignToClosestPoleTeleop(
+            AutonomousCommands.PolePattern.RIGHT, () -> rumbleBoth().repeatedly())
+            .beforeStarting(() -> LEDs.setState(LEDs.State.AUTO_ALIGN)) 
+            .andThen(() -> LEDs.setState(LEDs.State.DEFAULT)) 
+    );
     driver.y();
     driver.start().onTrue(pieceCombos.stow());
     driver.back().whileTrue(swerveDrive.park());
@@ -117,9 +122,19 @@ public class Controls {
         .onTrue(
             pieceCombos.algaeBargeSetup().andThen(pieceCombos.algaeBargeShoot())); // barge combo
     operator
-        .rightStick()
-        .onTrue(pieceCombos.intakeCoral().andThen(rumbleBoth())); // big right paddle
-        LEDs.setState(LEDs.State.HAS_CORAL);
+      .rightStick()
+      .onTrue(
+        pieceCombos.intakeCoral()
+          .beforeStarting(() -> {
+            LEDs.setState(LEDs.State.HAS_CORAL); // ✅ Set LED state when starting
+            rumbleBoth().schedule(); // ✅ Start rumbling
+          })
+            .andThen(() -> {
+            LEDs.setState(LEDs.State.DEFAULT); // ✅ Reset LED when done
+            rumbleBoth().cancel(); // ✅ Stop rumbling when action ends
+          })
+        );
+    
 
     operator.rightBumper().whileTrue(manipulator.grabber.adjustCoral()); // intake coral
     operator
@@ -127,8 +142,11 @@ public class Controls {
         .whileTrue(
             pieceCombos.intakeAlgaeOrShootCoral().andThen(rumbleBoth())); // drop coral/intake algae
     operator.leftBumper().whileTrue(pieceCombos.algaeBargeShoot()); // shoot barge
-    operator.leftTrigger().whileTrue(manipulator.grabber.dropAlgae()); // drop algae
-    LEDs.setState(LEDs.State.GOOD);
+    operator.leftTrigger().whileTrue(
+    manipulator.grabber.dropAlgae()
+        .beforeStarting(() -> LEDs.setState(LEDs.State.GOOD)) // ✅ Only runs when button is pressed
+        .andThen(() -> LEDs.setState(LEDs.State.DEFAULT)) // ✅ Resets when button is released
+);
 
     // operator.povUp().onTrue(hang.deploy());
     // operator.povDown().onTrue(hang.hang().onlyIf(() -> DriverStation.getMatchTime() >
